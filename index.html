@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Darey WorkHOUR Tracker</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0;
+            padding: 0;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #d1d5db;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #ff3b3f 0%, #ff6b6f 100%);
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(255, 59, 63, 0.35);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .app-logo {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+        
+        h1 { 
+            font-size: 28px;
+            color: white;
+            font-weight: 800;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .app-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-top: 3px;
+            font-weight: 500;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 100px;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.35);
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            opacity: 0.95;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .week-selector {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.35);
+        }
+        
+        .week-info {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .week-icon {
+            font-size: 28px;
+        }
+        
+        .saved-weeks {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .saved-weeks-label {
+            font-size: 13px;
+            font-weight: 700;
+            opacity: 0.95;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        
+        .weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .saved-week-item {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .saved-week-item:hover {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .saved-week-item.active {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1f2937;
+            border-color: #f59e0b;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+            transform: scale(1.02);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label { 
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1f2937;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .label-icon {
+            font-size: 16px;
+        }
+        
+        input, select { 
+            padding: 14px 16px;
+            width: 100%;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            color: #111827;
+            font-weight: 500;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        button { 
+            padding: 16px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #saveBtn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        #saveBtn:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        #exportBtn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        #exportBtn:hover {
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        #clearBtn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        #clearBtn:hover {
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        #newWeekBtn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        #newWeekBtn:hover {
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .table-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        table { 
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 700px;
+            font-size: 14px;
+        }
+        
+        th, td { 
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th { 
+            background: linear-gradient(135deg, #ff3b3f 0%, #ff6b6f 100%);
+            color: white;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            box-shadow: 0 2px 8px rgba(255, 59, 63, 0.2);
+        }
+        
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+        
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+        
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: #fef3c7;
+            transform: scale(1.005);
+        }
+        
+        .daily-total { 
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            font-weight: 800;
+            color: #78350f;
+            box-shadow: 0 2px 6px rgba(251, 191, 36, 0.3);
+        }
+        
+        .daily-total td {
+            padding: 16px 12px;
+            font-size: 15px;
+        }
+        
+        tfoot td { 
+            font-weight: 800;
+            background: linear-gradient(135deg, #5eead4 0%, #14b8a6 100%);
+            font-size: 17px;
+            color: #134e4a;
+            padding: 20px 12px;
+            box-shadow: 0 4px 12px rgba(94, 234, 212, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .success-message, .error-message {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            display: none;
+            font-weight: 700;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            font-size: 14px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .minutes-preview {
+            margin-top: 10px;
+            padding: 16px;
+            background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
+            border-radius: 10px;
+            border-left: 4px solid #10b981;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .preview-total {
+            font-size: 18px;
+            font-weight: 800;
+            color: #065f46;
+            margin-bottom: 6px;
+        }
+        
+        .preview-breakdown {
+            font-size: 14px;
+            color: #047857;
+            font-weight: 600;
+        }
+        
+        .action-btn {
+            padding: 7px 14px;
+            font-size: 12px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            margin-right: 6px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        
+        .edit-btn {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            color: white;
+        }
+        
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+        }
+        
+        .save-btn:hover {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+        }
+        
+        .cancel-btn {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            transform: translateY(-1px);
+        }
+        
+        .delete-btn {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3);
+        }
+        
+        .editing-row {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+            border-left: 4px solid #f59e0b;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+        }
+        
+        .editing-row input, .editing-row select {
+            padding: 8px 10px;
+            font-size: 13px;
+            border: 2px solid #f59e0b;
+        }
+        
+        .storage-indicator {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .storage-indicator.show {
+            opacity: 1;
+        }
+        
+        /* Responsive Design for All Devices */
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .weeks-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body { 
+                padding: 10px; 
+            }
+            
+            .app-header {
+                padding: 18px 20px;
+            }
+            
+            .app-logo {
+                width: 45px;
+                height: 45px;
+                font-size: 24px;
+            }
+            
+            h1 { 
+                font-size: 22px; 
+            }
+            
+            .app-subtitle {
+                font-size: 12px;
+            }
+            
+            .container { 
+                padding: 20px; 
+            }
+            
+            .week-selector {
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+            
+            table { 
+                font-size: 12px; 
+            }
+            
+            th, td { 
+                padding: 10px 8px; 
+            }
+            
+            .weeks-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .stat-card {
+                flex: 1;
+                min-width: 80px;
+                padding: 10px 16px;
+            }
+            
+            .storage-indicator {
+                bottom: 15px;
+                right: 15px;
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            
+            .app-header {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .week-selector {
+                padding: 15px;
+            }
+            
+            .week-info {
+                font-size: 20px;
+            }
+            
+            button {
+                padding: 14px 20px;
+                font-size: 14px;
+            }
+            
+            .table-container {
+                padding: 15px;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container, .app-header, .week-selector {
+                box-shadow: none;
+            }
+            
+            .no-export, .action-btn, button, .storage-indicator {
+                display: none !important;
+            }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <div class="app-title">
+                <div class="app-logo">⏱️</div>
+                <div>
+                    <h1>Darey WorkHOUR Tracker</h1>
+                    <div class="app-subtitle">Professional Time Management System</div>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-value" id="weekHours">0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Entries</div>
+                    <div class="stat-value" id="totalEntries">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="week-selector">
+                <div class="week-info">
+                    <span class="week-icon">📅</span>
+                    <span id="currentWeekName">Week 1</span>
+                </div>
+                <div class="saved-weeks">
+                    <div class="saved-weeks-label">Available Weeks</div>
+                    <div class="weeks-grid" id="savedWeeks"></div>
+                </div>
+            </div>
+            
+            <div class="success-message" id="successMsg">
+                <span>✅</span>
+                <span id="successText"></span>
+            </div>
+            <div class="error-message" id="errorMsg">
+                <span>❌</span>
+                <span id="errorText"></span>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="day">
+                        <span class="label-icon">📅</span>
+                        Work Date
+                    </label>
+                    <input type="date" id="day">
+                </div>
+
+                <div class="form-group">
+                    <label for="start">
+                        <span class="label-icon">🕐</span>
+                        Start Time
+                    </label>
+                    <input type="time" id="start">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="minutes">
+                        <span class="label-icon">⏲️</span>
+                        Minutes Worked (e.g., 30 or 5*3 or 10,15,5*2)
+                    </label>
+                    <input type="text" id="minutes" placeholder="e.g., 30 or 5*3 or 10,15,5*2">
+                    <div class="minutes-preview" id="minutesPreview">
+                        <div class="preview-total">Total: <span id="previewTotal">0</span> minutes</div>
+                        <div class="preview-breakdown" id="previewBreakdown"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">
+                        <span class="label-icon">🏷️</span>
+                        Work Type
+                    </label>
+                    <select id="type">
+                        <option value="Hours worked">Hours worked</option>
+                        <option value="Training">Training</option>
+                        <option value="Other">Other (specify below)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="otherTypeGroup" style="display: none;">
+                    <label for="otherType">
+                        <span class="label-icon">✏️</span>
+                        Custom Type
+                    </label>
+                    <input type="text" id="otherType" placeholder="Enter custom work type">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="notes">
+                        <span class="label-icon">📝</span>
+                        Notes (Optional)
+                    </label>
+                    <input type="text" id="notes" placeholder="Add any comments or details">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="saveBtn">
+                    <span>💾</span>
+                    <span>Save Entry</span>
+                </button>
+                <button id="newWeekBtn">
+                    <span>➕</span>
+                    <span>New Week</span>
+                </button>
+                <button id="exportBtn">
+                    <span>📥</span>
+                    <span>Export</span>
+                </button>
+                <button id="clearBtn">
+                    <span>🗑️</span>
+                    <span>Clear Week</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">
+                    <span>📊</span>
+                    <span>Time Entries</span>
+                </div>
+            </div>
+            <table id="timesheet">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Type</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Min</th>
+                        <th>Hours</th>
+                        <th>Comment</th>
+                        <th class="no-export">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">🏆 Grand Total</td>
+                        <td id="grandHrs">0.00000</td>
+                        <td></td>
+                        <td class="no-export"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="storage-indicator" id="storageIndicator">
+        <span>💾</span>
+        <span>Saved to database</span>
+    </div>
+
+    <script>
+        const LocalStorageManager = {
+            KEYS: {
+                CURRENT_WEEK: 'dareyWorkTracker_currentWeek',
+                UI_PREFERENCES: 'dareyWorkTracker_uiPreferences',
+                LAST_FORM_VALUES: 'dareyWorkTracker_lastFormValues',
+                WEEK_METADATA: 'dareyWorkTracker_weekMetadata',
+                LAST_SYNC: 'dareyWorkTracker_lastSync'
+            },
+
+            getCurrentWeek() {
+                return localStorage.getItem(this.KEYS.CURRENT_WEEK) || 'week1';
+            },
+
+            setCurrentWeek(weekKey) {
+                localStorage.setItem(this.KEYS.CURRENT_WEEK, weekKey);
+            },
+
+            getUIPreferences() {
+                const data = localStorage.getItem(this.KEYS.UI_PREFERENCES);
+                return data ? JSON.parse(data) : {
+                    defaultType: 'Hours worked',
+                    autoFillToday: true
+                };
+            },
+
+            saveUIPreferences(prefs) {
+                const current = this.getUIPreferences();
+                localStorage.setItem(this.KEYS.UI_PREFERENCES, JSON.stringify({ ...current, ...prefs }));
+            },
+
+            getLastFormValues() {
+                const data = localStorage.getItem(this.KEYS.LAST_FORM_VALUES);
+                return data ? JSON.parse(data) : null;
+            },
+
+            saveLastFormValues(values) {
+                localStorage.setItem(this.KEYS.LAST_FORM_VALUES, JSON.stringify(values));
+            },
+
+            getWeekMetadata() {
+                const data = localStorage.getItem(this.KEYS.WEEK_METADATA);
+                return data ? JSON.parse(data) : {};
+            },
+
+            saveWeekMetadata(metadata) {
+                localStorage.setItem(this.KEYS.WEEK_METADATA, JSON.stringify(metadata));
+            },
+
+            updateWeekMetadata(weekKey, info) {
+                const metadata = this.getWeekMetadata();
+                metadata[weekKey] = {
+                    ...metadata[weekKey],
+                    ...info,
+                    lastModified: Date.now()
+                };
+                this.saveWeekMetadata(metadata);
+            },
+
+            updateLastSync() {
+                localStorage.setItem(this.KEYS.LAST_SYNC, Date.now().toString());
+            },
+
+            getLastSync() {
+                const sync = localStorage.getItem(this.KEYS.LAST_SYNC);
+                return sync ? parseInt(sync) : null;
+            }
+        };
+
+        const IndexedDBManager = {
+            db: null,
+            DB_NAME: 'DareyWorkTrackerDB',
+            DB_VERSION: 1,
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        resolve(this.db);
+                    };
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+
+                        if (!db.objectStoreNames.contains('weeks')) {
+                            const weeksStore = db.createObjectStore('weeks', { keyPath: 'weekKey' });
+                            weeksStore.createIndex('lastModified', 'lastModified', { unique: false });
+                        }
+
+                        if (!db.objectStoreNames.contains('entries')) {
+                            const entriesStore = db.createObjectStore('entries', { keyPath: 'id', autoIncrement: true });
+                            entriesStore.createIndex('weekKey', 'weekKey', { unique: false });
+                            entriesStore.createIndex('dayKey', 'dayKey', { unique: false });
+                            entriesStore.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                    };
+                });
+            },
+
+            async saveWeek(weekKey, entries) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['weeks'], 'readwrite');
+                    const store = transaction.objectStore('weeks');
+                    
+                    const weekData = {
+                        weekKey: weekKey,
+                        entries: entries,
+                        lastModified: Date.now()
+                    };
+                    
+                    const request = store.put(weekData);
+                    request.onsuccess = () => {
+                        showStorageIndicator();
+                        resolve(request.result);
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            async getWeek(weekKey) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['weeks'], 'readonly');
+                    const store = transaction.objectStore('weeks');
+                    const request = store.get(weekKey);
+
+                    request.onsuccess = () => {
+                        resolve(request.result ? request.result.entries : []);
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            async getAllWeeks() {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['weeks'], 'readonly');
+                    const store = transaction.objectStore('weeks');
+                    const request = store.getAll();
+
+                    request.onsuccess = () => {
+                        const weeks = {};
+                        request.result.forEach(weekData => {
+                            weeks[weekData.weekKey] = weekData.entries;
+                        });
+                        resolve(weeks);
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            async deleteWeek(weekKey) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['weeks'], 'readwrite');
+                    const store = transaction.objectStore('weeks');
+                    const request = store.delete(weekKey);
+
+                    request.onsuccess = () => {
+                        showStorageIndicator();
+                        resolve();
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            async clearAllData() {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['weeks', 'entries'], 'readwrite');
+                    
+                    transaction.objectStore('weeks').clear();
+                    transaction.objectStore('entries').clear();
+
+                    transaction.oncomplete = () => {
+                        showStorageIndicator();
+                        resolve();
+                    };
+                    transaction.onerror = () => reject(transaction.error);
+                });
+            }
+        };
+
+        let currentWeek = 'week1';
+        let allWeeks = {};
+
+        function showStorageIndicator() {
+            const indicator = document.getElementById('storageIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        async function initApp() {
+            try {
+                await IndexedDBManager.init();
+                currentWeek = LocalStorageManager.getCurrentWeek();
+                await loadAllWeeksData();
+                restoreUIPreferences();
+                updateHeaderStats();
+                console.log('Darey WorkHOUR Tracker initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                showMessage('error', 'Failed to initialize storage. Some features may not work properly.');
+            }
+        }
+
+        async function loadAllWeeksData() {
+            try {
+                allWeeks = await IndexedDBManager.getAllWeeks();
+                
+                if (!allWeeks[currentWeek]) {
+                    allWeeks[currentWeek] = [];
+                }
+                
+                updateAllWeekMetadata();
+                updateWeekSelector();
+                updateTable();
+                LocalStorageManager.updateLastSync();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                allWeeks = { [currentWeek]: [] };
+            }
+        }
+
+        async function saveWeekData(weekKey) {
+            try {
+                await IndexedDBManager.saveWeek(weekKey, allWeeks[weekKey]);
+                updateWeekMetadataForWeek(weekKey);
+                LocalStorageManager.updateLastSync();
+            } catch (error) {
+                console.error('Error saving week data:', error);
+                showMessage('error', 'Failed to save data');
+            }
+        }
+
+        function updateWeekMetadataForWeek(weekKey) {
+            const entries = allWeeks[weekKey];
+            if (entries && entries.length > 0) {
+                const firstDay = entries[0].dayKey;
+                const lastDay = entries[entries.length - 1].dayKey;
+                const totalEntries = entries.length;
+                
+                LocalStorageManager.updateWeekMetadata(weekKey, {
+                    firstDay,
+                    lastDay,
+                    totalEntries
+                });
+            }
+        }
+
+        function updateAllWeekMetadata() {
+            Object.keys(allWeeks).forEach(weekKey => {
+                updateWeekMetadataForWeek(weekKey);
+            });
+        }
+
+        function restoreUIPreferences() {
+            const prefs = LocalStorageManager.getUIPreferences();
+            
+            if (prefs.defaultType) {
+                document.getElementById('type').value = prefs.defaultType;
+            }
+            
+            if (prefs.autoFillToday) {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('day').value = today;
+            }
+        }
+
+        function updateHeaderStats() {
+            const entries = allWeeks[currentWeek] || [];
+            const totalMinutes = entries.reduce((sum, entry) => sum + entry.totalMinutes, 0);
+            const totalHours = (totalMinutes / 60).toFixed(2);
+            
+            document.getElementById('weekHours').textContent = totalHours;
+            document.getElementById('totalEntries').textContent = entries.length;
+        }
+
+        function showMessage(type, message) {
+            const msgEl = document.getElementById(type === 'success' ? 'successMsg' : 'errorMsg');
+            const textEl = document.getElementById(type === 'success' ? 'successText' : 'errorText');
+            textEl.textContent = message;
+            msgEl.style.display = 'flex';
+            setTimeout(() => {
+                msgEl.style.display = 'none';
+            }, 3000);
+        }
+
+        function formatTimeAMPM(date) {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            return hours + ':' + minutes + ' ' + ampm;
+        }
+
+        function getDayLabel(dateStr) {
+            const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            const parts = dateStr.split('-');
+            const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            const dayName = days[dateObj.getDay()];
+            const day = parts[2];
+            const month = parts[1];
+            return dayName + ' ' + day + '/' + month;
+        }
+
+        function parseMinutesInput(input) {
+            const parts = input.split(',').map(p => p.trim()).filter(p => p);
+            let total = 0;
+            const breakdown = [];
+
+            parts.forEach(part => {
+                if (part.includes('*')) {
+                    const splitParts = part.split('*');
+                    const value = parseFloat(splitParts[0].trim());
+                    const multiplier = parseFloat(splitParts[1].trim());
+                    if (!isNaN(value) && !isNaN(multiplier) && value > 0 && multiplier > 0) {
+                        const result = value * multiplier;
+                        total += result;
+                        breakdown.push(value + ' × ' + multiplier + ' = ' + result);
+                    }
+                } else {
+                    const value = parseFloat(part);
+                    if (!isNaN(value) && value > 0) {
+                        total += value;
+                        breakdown.push(value + '');
+                    }
+                }
+            });
+
+            return { total: total, breakdown: breakdown };
+        }
+
+        function getWeekDisplayName(weekKey) {
+            const weekNum = weekKey.replace('week', '');
+            const metadata = LocalStorageManager.getWeekMetadata()[weekKey];
+            
+            if (metadata && metadata.firstDay && metadata.lastDay) {
+                return 'Week ' + weekNum + ' (' + metadata.firstDay + ' to ' + metadata.lastDay + ')';
+            }
+            
+            const weekData = allWeeks[weekKey];
+            if (weekData && weekData.length > 0) {
+                const firstDay = weekData[0].dayKey;
+                const lastDay = weekData[weekData.length - 1].dayKey;
+                return 'Week ' + weekNum + ' (' + firstDay + ' to ' + lastDay + ')';
+            }
+            
+            return 'Week ' + weekNum;
+        }
+
+        function updateWeekSelector() {
+            document.getElementById('currentWeekName').textContent = getWeekDisplayName(currentWeek);
+            
+            const savedWeeksDiv = document.getElementById('savedWeeks');
+            savedWeeksDiv.innerHTML = '';
+            
+            Object.keys(allWeeks).sort().forEach(weekKey => {
+                const weekBtn = document.createElement('div');
+                weekBtn.className = 'saved-week-item';
+                if (weekKey === currentWeek) {
+                    weekBtn.classList.add('active');
+                }
+                weekBtn.textContent = getWeekDisplayName(weekKey);
+                weekBtn.onclick = () => switchWeek(weekKey);
+                savedWeeksDiv.appendChild(weekBtn);
+            });
+        }
+
+        async function switchWeek(weekKey) {
+            currentWeek = weekKey;
+            LocalStorageManager.setCurrentWeek(weekKey);
+            
+            updateWeekSelector();
+            updateTable();
+            updateHeaderStats();
+            
+            showMessage('success', 'Switched to ' + getWeekDisplayName(weekKey));
+        }
+
+        async function startNewWeek() {
+            const weekNumbers = Object.keys(allWeeks).map(k => parseInt(k.replace('week', '')));
+            const nextWeekNum = Math.max(...weekNumbers) + 1;
+            const newWeekKey = 'week' + nextWeekNum;
+            
+            allWeeks[newWeekKey] = [];
+            currentWeek = newWeekKey;
+            
+            LocalStorageManager.setCurrentWeek(newWeekKey);
+            await saveWeekData(newWeekKey);
+            
+            updateWeekSelector();
+            updateTable();
+            updateHeaderStats();
+            
+            showMessage('success', 'Started ' + getWeekDisplayName(newWeekKey) + '!');
+        }
+
+        async function saveEntry() {
+            const day = document.getElementById('day').value;
+            const startTimeStr = document.getElementById('start').value;
+            const minutesStr = document.getElementById('minutes').value;
+            const typeSelect = document.getElementById('type').value;
+            const otherType = document.getElementById('otherType').value;
+            const type = typeSelect === 'Other' ? otherType : typeSelect;
+            const notes = document.getElementById('notes').value;
+
+            if (!day || !startTimeStr || !minutesStr) { 
+                showMessage('error', 'Please fill all required fields');
+                return; 
+            }
+
+            if (typeSelect === 'Other' && !otherType) {
+                showMessage('error', 'Please specify the work type');
+                return;
+            }
+
+            const parsed = parseMinutesInput(minutesStr);
+            const totalMinutes = parsed.total;
+            
+            if (totalMinutes === 0) {
+                showMessage('error', 'Please enter valid minutes');
+                return;
+            }
+
+            const timeParts = startTimeStr.split(':');
+            const h = parseInt(timeParts[0]);
+            const m = parseInt(timeParts[1]);
+            const dateParts = day.split('-');
+            const startDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]), h, m, 0);
+            const endDate = new Date(startDate.getTime() + totalMinutes * 60000);
+
+            allWeeks[currentWeek].push({
+                dayKey: day,
+                day: getDayLabel(day),
+                type: type,
+                startTime: formatTimeAMPM(startDate),
+                endTime: formatTimeAMPM(endDate),
+                totalMinutes: totalMinutes,
+                notes: notes,
+                timestamp: Date.now()
+            });
+
+            await saveWeekData(currentWeek);
+            LocalStorageManager.saveLastFormValues({ type: typeSelect });
+            
+            updateTable();
+            updateWeekSelector();
+            updateHeaderStats();
+            
+            showMessage('success', 'Entry saved successfully!');
+            
+            document.getElementById('start').value='';
+            document.getElementById('minutes').value='';
+            document.getElementById('minutesPreview').style.display='none';
+            document.getElementById('notes').value='';
+        }
+
+        async function deleteRow(index) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                allWeeks[currentWeek].splice(index, 1);
+                await saveWeekData(currentWeek);
+                
+                updateTable();
+                updateWeekSelector();
+                updateHeaderStats();
+                
+                showMessage('success', 'Entry deleted successfully!');
+            }
+        }
+
+        function editRow(index) {
+            const row = document.querySelector('tr[data-index="' + index + '"]');
+            const entry = allWeeks[currentWeek][index];
+            
+            row.classList.add('editing-row');
+            
+            const isCustomType = entry.type !== 'Hours worked' && entry.type !== 'Training';
+            const typeSelectOptions = '<option value="Hours worked"' + (entry.type === 'Hours worked' ? ' selected' : '') + '>Hours worked</option>' +
+                '<option value="Training"' + (entry.type === 'Training' ? ' selected' : '') + '>Training</option>' +
+                '<option value="Other"' + (isCustomType ? ' selected' : '') + '>Other</option>';
+            
+            row.innerHTML = '<td><input type="date" id="edit-day-' + index + '" value="' + entry.dayKey + '"></td>' +
+                '<td><select id="edit-type-' + index + '" onchange="toggleEditOtherType(' + index + ')">' + typeSelectOptions + '</select>' +
+                '<input type="text" id="edit-other-type-' + index + '" value="' + (isCustomType ? entry.type : '') + '" ' +
+                'style="display: ' + (isCustomType ? 'block' : 'none') + '; margin-top: 4px;" placeholder="Enter type"></td>' +
+                '<td><input type="time" id="edit-start-' + index + '" value="' + convertTo24Hour(entry.startTime) + '"></td>' +
+                '<td>' + entry.endTime + '</td>' +
+                '<td><input type="number" id="edit-min-' + index + '" value="' + entry.totalMinutes + '"></td>' +
+                '<td>' + (entry.totalMinutes / 60).toFixed(5) + '</td>' +
+                '<td><input type="text" id="edit-notes-' + index + '" value="' + entry.notes + '"></td>' +
+                '<td class="no-export">' +
+                '<button class="action-btn save-btn" onclick="saveEditedRow(' + index + ')">💾 Save</button>' +
+                '<button class="action-btn cancel-btn" onclick="cancelEdit()">✕ Cancel</button></td>';
+        }
+
+        function toggleEditOtherType(index) {
+            const typeSelect = document.getElementById('edit-type-' + index);
+            const otherTypeInput = document.getElementById('edit-other-type-' + index);
+            
+            if (typeSelect.value === 'Other') {
+                otherTypeInput.style.display = 'block';
+            } else {
+                otherTypeInput.style.display = 'none';
+                otherTypeInput.value = '';
+            }
+        }
+
+        function convertTo24Hour(time12h) {
+            const splitTime = time12h.split(' ');
+            const time = splitTime[0];
+            const modifier = splitTime[1];
+            const timeParts = time.split(':');
+            let hours = timeParts[0];
+            const minutes = timeParts[1];
+            
+            if (hours === '12') {
+                hours = '00';
+            }
+            
+            if (modifier === 'PM') {
+                hours = parseInt(hours, 10) + 12;
+            }
+            
+            return hours.toString().padStart(2, '0') + ':' + minutes;
+        }
+
+        async function saveEditedRow(index) {
+            const day = document.getElementById('edit-day-' + index).value;
+            const typeSelect = document.getElementById('edit-type-' + index).value;
+            const otherType = document.getElementById('edit-other-type-' + index).value;
+            const type = typeSelect === 'Other' ? otherType : typeSelect;
+            const startTimeStr = document.getElementById('edit-start-' + index).value;
+            const totalMinutes = parseFloat(document.getElementById('edit-min-' + index).value);
+            const notes = document.getElementById('edit-notes-' + index).value;
+
+            if (!day || !type || !startTimeStr || !totalMinutes) {
+                showMessage('error', 'Please fill all required fields');
+                return;
+            }
+
+            const timeParts = startTimeStr.split(':');
+            const h = parseInt(timeParts[0]);
+            const m = parseInt(timeParts[1]);
+            const dateParts = day.split('-');
+            const startDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]), h, m, 0);
+            const endDate = new Date(startDate.getTime() + totalMinutes * 60000);
+
+            allWeeks[currentWeek][index] = {
+                dayKey: day,
+                day: getDayLabel(day),
+                type: type,
+                startTime: formatTimeAMPM(startDate),
+                endTime: formatTimeAMPM(endDate),
+                totalMinutes: totalMinutes,
+                notes: notes,
+                timestamp: allWeeks[currentWeek][index].timestamp || Date.now()
+            };
+
+            await saveWeekData(currentWeek);
+            updateTable();
+            updateWeekSelector();
+            updateHeaderStats();
+            
+            showMessage('success', 'Entry updated successfully!');
+        }
+
+        function cancelEdit() {
+            updateTable();
+        }
+
+        function updateTable() {
+            const tbody = document.querySelector('#timesheet tbody');
+            tbody.innerHTML = '';
+            let grandMin = 0;
+
+            const data = allWeeks[currentWeek] || [];
+            
+            if (data.length === 0) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = '<td colspan="8" class="empty-state">' +
+                    '<div class="empty-icon">📋</div>' +
+                    '<div class="empty-text">No entries yet. Start tracking your work hours!</div></td>';
+                tbody.appendChild(emptyRow);
+                document.getElementById('grandHrs').textContent = '0.00000';
+                return;
+            }
+            
+            const grouped = {};
+            data.forEach((entry, index) => {
+                entry.dataIndex = index;
+                if (!grouped[entry.dayKey]) {
+                    grouped[entry.dayKey] = [];
+                }
+                grouped[entry.dayKey].push(entry);
+            });
+
+            const sortedDays = Object.keys(grouped).sort();
+
+            sortedDays.forEach(dayKey => {
+                let dailyMin = 0;
+                
+                grouped[dayKey].forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.setAttribute('data-index', entry.dataIndex);
+                    const hrs = (entry.totalMinutes / 60).toFixed(5);
+                    row.innerHTML = '<td>' + entry.day + '</td>' +
+                        '<td>' + entry.type + '</td>' +
+                        '<td>' + entry.startTime + '</td>' +
+                        '<td>' + entry.endTime + '</td>' +
+                        '<td>' + entry.totalMinutes + '</td>' +
+                        '<td>' + hrs + '</td>' +
+                        '<td>' + entry.notes + '</td>' +
+                        '<td class="no-export">' +
+                        '<button class="action-btn edit-btn" onclick="editRow(' + entry.dataIndex + ')">✏️ Edit</button>' +
+                        '<button class="action-btn delete-btn" onclick="deleteRow(' + entry.dataIndex + ')">🗑️</button></td>';
+                    tbody.appendChild(row);
+                    dailyMin += entry.totalMinutes;
+                });
+
+                const dailyHrs = (dailyMin / 60).toFixed(5);
+                const totalRow = document.createElement('tr');
+                totalRow.className = 'daily-total';
+                totalRow.innerHTML = '<td colspan="5">' + grouped[dayKey][0].day + ' Total</td><td>' + dailyHrs + '</td><td></td><td class="no-export"></td>';
+                tbody.appendChild(totalRow);
+
+                grandMin += dailyMin;
+            });
+
+            const grandHrs = (grandMin / 60).toFixed(5);
+            document.getElementById('grandHrs').textContent = grandHrs;
+        }
+
+        function exportData() {
+            if (!allWeeks[currentWeek] || allWeeks[currentWeek].length === 0) {
+                showMessage('error', 'No data to export');
+                return;
+            }
+            
+            const tableClone = document.getElementById('timesheet').cloneNode(true);
+            tableClone.querySelectorAll('.no-export').forEach(el => el.remove());
+            
+            let html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Darey WorkHOUR Tracker</title>';
+            html += '<style>body{font-family:Arial,sans-serif;padding:20px;}h1{color:#ff3b3f;margin-bottom:20px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #000;padding:8px;text-align:left;}th{background-color:#ff3b3f;color:white;font-weight:bold;}.daily-total{background-color:#fbbf24;font-weight:bold;}tfoot td{font-weight:bold;background-color:#5eead4;}</style>';
+            html += '</head><body>';
+            html += '<h1>Darey WorkHOUR Tracker - ' + getWeekDisplayName(currentWeek) + '</h1>';
+            html += tableClone.outerHTML;
+            html += '</body></html>';
+
+            const blob = new Blob([html], {type:'application/msword'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            
+            const now = new Date();
+            const filename = 'DareyWorkHOUR_' + currentWeek + '_' + now.getFullYear() + '-' + 
+                String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + '.doc';
+            link.download = filename;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showMessage('success', 'Timesheet exported successfully!');
+        }
+
+        async function clearWeek() {
+            if (!allWeeks[currentWeek] || allWeeks[currentWeek].length === 0) {
+                showMessage('error', 'No data to clear');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to clear all entries in ' + getWeekDisplayName(currentWeek) + '? This cannot be undone.')) {
+                allWeeks[currentWeek] = [];
+                await saveWeekData(currentWeek);
+                
+                updateTable();
+                updateWeekSelector();
+                updateHeaderStats();
+                
+                showMessage('success', 'Week entries cleared');
+            }
+        }
+
+        document.getElementById('minutes').addEventListener('input', function(e) {
+            const input = e.target.value.trim();
+            const preview = document.getElementById('minutesPreview');
+            
+            if (!input) {
+                preview.style.display = 'none';
+                return;
+            }
+
+            const parsed = parseMinutesInput(input);
+            const total = parsed.total;
+            const breakdown = parsed.breakdown;
+            
+            if (total > 0) {
+                document.getElementById('previewTotal').textContent = total;
+                document.getElementById('previewBreakdown').textContent = breakdown.join(' + ');
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+
+        document.getElementById('type').addEventListener('change', function(e) {
+            const otherTypeGroup = document.getElementById('otherTypeGroup');
+            if (e.target.value === 'Other') {
+                otherTypeGroup.style.display = 'block';
+            } else {
+                otherTypeGroup.style.display = 'none';
+                document.getElementById('otherType').value = '';
+            }
+        });
+
+        document.getElementById('saveBtn').addEventListener('click', saveEntry);
+        document.getElementById('newWeekBtn').addEventListener('click', startNewWeek);
+        document.getElementById('exportBtn').addEventListener('click', exportData);
+        document.getElementById('clearBtn').addEventListener('click', clearWeek);
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
